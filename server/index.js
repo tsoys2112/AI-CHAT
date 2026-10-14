@@ -2,7 +2,7 @@ import { createServer } from 'node:http';
 
 const PORT = Number(process.env.PORT) || 3001;
 const API_KEY = process.env.GEMINI_API_KEY;
-const MODEL = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 const MAX_HISTORY = 20;
 const MAX_BODY_BYTES = 64 * 1024;
 
@@ -48,9 +48,12 @@ function toGeminiContents(history) {
   return contents;
 }
 
+const RETRY_STATUSES = new Set([429, 503]);
+const RETRY_DELAYS_MS = [800, 2000, 4000];
+
 async function askGemini(history) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
-  const res = await fetch(url, {
+  const init = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': API_KEY },
     body: JSON.stringify({
@@ -58,7 +61,13 @@ async function askGemini(history) {
       contents: toGeminiContents(history),
       generationConfig: { temperature: 0.6, maxOutputTokens: 1024 },
     }),
-  });
+  };
+  let res = await fetch(url, init);
+  for (const ms of RETRY_DELAYS_MS) {
+    if (!RETRY_STATUSES.has(res.status)) break;
+    await new Promise((resolve) => setTimeout(resolve, ms));
+    res = await fetch(url, init);
+  }
   if (!res.ok) {
     const detail = await res.text();
     throw new Error(`Gemini ${res.status}: ${detail.slice(0, 300)}`);

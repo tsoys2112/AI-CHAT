@@ -18,7 +18,7 @@ npm run dev
 1. `cp .env.example .env` и впишите `GEMINI_API_KEY`.
 2. В двух терминалах: `npm run server` и `npm run dev` (Vite проксирует `/api` на порт 3001).
 
-Модель задаётся `GEMINI_MODEL` (по умолчанию `gemini-2.5-flash`). Проверка: `GET /api/health`.
+Модель задаётся `GEMINI_MODEL` (по умолчанию `gemini-3.8-flash`). Проверка: `GET /api/health`.
 
 ## Переменные окружения
 
