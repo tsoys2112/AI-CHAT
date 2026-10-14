@@ -1,0 +1,57 @@
+.row {
+  display: flex;
+  gap: 8px;
+  max-width: 88%;
+}
+
+.rowAgent {
+  align-self: flex-start;
+}
+
+.rowUser {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rowUser .content {
+  align-items: flex-end;
+}
+
+.bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.bubbleAgent {
+  background: var(--color-bg-bubble-agent);
+  color: var(--color-text-primary);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.bubbleUser {
+  background: var(--color-bg-bubble-user);
+  color: var(--color-text-on-user-bubble);
+  border-bottom-right-radius: 4px;
+}
+
+.time {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary);
+  padding: 0 4px;
+}

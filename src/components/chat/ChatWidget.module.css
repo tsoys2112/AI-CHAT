@@ -1,0 +1,19 @@
+.root {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .root {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    align-items: stretch;
+  }
+}

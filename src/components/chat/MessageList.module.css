@@ -1,0 +1,29 @@
+.list {
+  position: relative;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 16px 12px;
+}
+
+.messages {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.anchor {
+  height: 1px;
+  flex-shrink: 0;
+}
+
+.list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.list::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 3px;
+}
