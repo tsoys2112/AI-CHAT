@@ -1,6 +1,8 @@
 // Демо-каталог магазина «СолнцеДом». Используется и лендингом, и backend (server/index.js).
 export const STORE = {
   name: 'СолнцеДом',
+  telegram: '@tsoy2112',
+  telegramUrl: 'https://t.me/tsoy2112',
   supportHours: 'пн–пт 9:00–18:00 (МСК)',
   warranty: {
     panels: '12 лет на изделие и 25 лет на выходную мощность (не менее 84,8%)',
