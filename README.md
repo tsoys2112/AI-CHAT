@@ -11,13 +11,19 @@ npm run dev
 
 Сборка: `npm run build`, предпросмотр: `npm run preview`.
 
+## Backend на Gemini
+
+Ответы формирует `server/index.js` (без зависимостей, Node 20+): принимает `POST /api/chat`, вызывает Gemini REST API с системным промптом и историей диалога. Ключ хранится только на сервере.
+
+1. `cp .env.example .env` и впишите `GEMINI_API_KEY`.
+2. В двух терминалах: `npm run server` и `npm run dev` (Vite проксирует `/api` на порт 3001).
+
+Модель задаётся `GEMINI_MODEL` (по умолчанию `gemini-2.5-flash`). Проверка: `GET /api/health`.
+
 ## Переменные окружения
 
-Скопируйте `.env.example` в `.env`. По умолчанию `VITE_USE_MOCK=true` — ответы генерируются в `src/mocks/agent.mock.js` с задержкой 600–1200 мс.
-
-## Подключение API
-
-Реализуйте POST в `src/data/chat.js` (см. комментарий в файле) и установите `VITE_USE_MOCK=false`.
+- `VITE_USE_MOCK=true` — ответы из `src/mocks/agent.mock.js` без backend.
+- `GEMINI_API_KEY`, `GEMINI_MODEL`, `PORT` — настройки backend.
 
 ## Структура
 

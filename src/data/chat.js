@@ -1,6 +1,6 @@
 import { getMockAgentReply } from '../mocks/agent.mock.js';
 
-const USE_MOCK = import.meta.env.VITE_USE_MOCK !== 'false';
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 
 function delay(ms) {
   return new Promise((resolve) => {
@@ -18,14 +18,14 @@ export async function sendUserMessage(text, history) {
     return getMockAgentReply(text, history);
   }
 
-  // Будущее подключение API (без streaming):
-  // const res = await fetch('/api/chat', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ message: text, history }),
-  // });
-  // if (!res.ok) throw new Error('Ошибка сервера');
-  // return res.json();
-
-  throw new Error('API не подключён');
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: text,
+      history: history.map(({ role, text: t }) => ({ role, text: t })),
+    }),
+  });
+  if (!res.ok) throw new Error('Ошибка сервера');
+  return res.json();
 }
