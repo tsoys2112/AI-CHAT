@@ -48,11 +48,12 @@ function toGeminiContents(history) {
   return contents;
 }
 
-const RETRY_STATUSES = new Set([429, 503]);
-const RETRY_DELAYS_MS = [800, 2000, 4000];
+// При перегрузке (429/503) или недоступности модели (404) пробуем следующую из списка.
+const FALLBACK_MODELS = ['gemini-3.5-flash-lite', 'gemini-3-flash-preview'];
+const SKIP_STATUSES = new Set([404, 429, 503]);
+const ROUNDS = 2;
 
 async function askGemini(history) {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`;
   const init = {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': API_KEY },
@@ -62,11 +63,19 @@ async function askGemini(history) {
       generationConfig: { temperature: 0.6, maxOutputTokens: 1024 },
     }),
   };
-  let res = await fetch(url, init);
-  for (const ms of RETRY_DELAYS_MS) {
-    if (!RETRY_STATUSES.has(res.status)) break;
-    await new Promise((resolve) => setTimeout(resolve, ms));
-    res = await fetch(url, init);
+  const models = [...new Set([MODEL, ...FALLBACK_MODELS])];
+  let res;
+  for (let round = 0; round < ROUNDS; round += 1) {
+    if (round > 0) await new Promise((resolve) => setTimeout(resolve, 1500));
+    for (const model of models) {
+      res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
+        init,
+      );
+      if (!SKIP_STATUSES.has(res.status)) break;
+      console.warn(`${model}: ${res.status}, пробую следующую модель`);
+    }
+    if (!SKIP_STATUSES.has(res.status)) break;
   }
   if (!res.ok) {
     const detail = await res.text();
